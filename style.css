@@ -1,0 +1,384 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f6fa;
+    color: #2d3436;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ===== 左侧面板 ===== */
+.left-panel {
+    width: 480px;
+    min-width: 480px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #fff;
+    border-right: 1px solid #e1e5e9;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 标题 */
+.header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+.header .subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* 区块 */
+.section {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 16px;
+}
+.section:last-child {
+    border-bottom: none;
+}
+.section h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.icon-key::before { content: '🔑'; }
+.icon-location::before { content: '📝'; }
+.icon-pin::before { content: '📍'; }
+.icon-table::before { content: '📋'; }
+
+/* 表单 */
+.form-group {
+    position: relative;
+    margin-bottom: 8px;
+}
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+.form-group input[type="password"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 8px 32px 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.form-group input:focus {
+    border-color: #4a90d9;
+}
+.toggle-pwd {
+    position: absolute;
+    right: 6px;
+    top: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.5;
+}
+.toggle-pwd:hover { opacity: 1; }
+
+.btn-save-config {
+    padding: 7px 16px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+    transition: all 0.2s;
+}
+.btn-save-config:hover {
+    background: #e8e8e8;
+}
+
+/* 地址输入行 */
+.address-input-row {
+    display: flex;
+    gap: 8px;
+}
+.address-input-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.address-input-row input:focus {
+    border-color: #4a90d9;
+}
+.btn-primary {
+    padding: 10px 20px;
+    background: #5856d6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-primary:hover {
+    background: #4845c7;
+}
+.btn-primary:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+/* 原始坐标 */
+.icon-pin::before { content: '📌'; }
+.coords-input-row {
+    display: flex;
+    gap: 8px;
+}
+.coords-input-row input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.coords-input-row input:focus {
+    border-color: #4a90d9;
+}
+.coords-hint {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 6px;
+}
+
+/* 标签栏 */
+.tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+.tab {
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #f0f0f3;
+    color: #666;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.tab.active {
+    background: #e8eaff;
+    color: #5856d6;
+    font-weight: 600;
+}
+.tab:hover:not(.active) {
+    background: #e5e5ea;
+}
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.dot-google { background: #4285F4; }
+.dot-smarty { background: #FF9800; }
+
+/* 对比表格 */
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.compare-table th {
+    text-align: left;
+    padding: 8px 10px;
+    background: #f7f8fa;
+    color: #666;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 1px solid #eee;
+}
+.compare-table td {
+    padding: 10px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+}
+.field-label {
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+    width: 80px;
+}
+.cell-value {
+    color: #333;
+    word-break: break-word;
+    max-width: 180px;
+
+}
+
+/* 状态行 */
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #666;
+}
+.status-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.badge-success {
+    background: #efe;
+    color: #27ae60;
+}
+.badge-fail {
+    background: #fee;
+    color: #c0392b;
+}
+.badge-partial {
+    background: #fff3cd;
+    color: #856404;
+}
+.compare-result {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.compare-green {
+    background: #efe;
+    color: #27ae60;
+}
+.compare-red {
+    background: #fee;
+    color: #c0392b;
+}
+
+/* ===== 右侧地图面板 ===== */
+.right-panel {
+    flex: 1;
+    position: relative;
+}
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* 地图图例 */
+.map-legend {
+    position: absolute;
+    bottom: 36px;
+    left: 12px;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 12px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.legend-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+}
+.legend-google { background: #4285F4; }
+.legend-smarty { background: #FF9800; }
+.legend-center { background: #4CAF50; }
+
+/* 地图归属 */
+.map-attribution {
+    position: absolute;
+    bottom: 4px;
+    right: 8px;
+    font-size: 11px;
+    color: #666;
+    background: rgba(255,255,255,0.75);
+    padding: 2px 6px;
+    border-radius: 3px;
+    z-index: 999;
+}
+
+/* Leaflet 弹窗样式覆盖 */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+.leaflet-popup-content {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 8px 12px;
+}
+
+/* 加载动画 */
+.loading-overlay {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 滚动条美化 */
+.left-panel::-webkit-scrollbar {
+    width: 5px;
+}
+.left-panel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+/* 响应式 */
+@media (max-width: 800px) {
+    .container { flex-direction: column; }
+    .left-panel { width: 100%; min-width: unset; height: auto; max-height: 60vh; }
+    .right-panel { min-height: 40vh; }
+}

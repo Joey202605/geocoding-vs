@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地址解析对比</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- 左侧面板 -->
+        <div class="left-panel">
+            <!-- 标题 -->
+            <div class="header">
+                <h1>地址解析对比</h1>
+                <p class="subtitle">Google Geocoding vs SmartyStreets</p>
+            </div>
+
+            <!-- API 密钥配置 -->
+            <div class="section api-section">
+                <h2><i class="icon-key"></i> API 密钥配置</h2>
+                <div class="form-group">
+                    <label>Google API Key</label>
+                    <input type="password" id="googleApiKey" placeholder="请输入 Google API Key" />
+                    <button class="toggle-pwd" onclick="togglePassword('googleApiKey', this)" title="显示/隐藏密码">👁</button>
+                </div>
+                <div class="form-group">
+                    <label>Smarty Auth ID</label>
+                    <input type="password" id="smartyAuthId" placeholder="请输入 Smarty Auth ID" />
+                    <button class="toggle-pwd" onclick="togglePassword('smartyAuthId', this)" title="显示/隐藏密码">👁</button>
+                </div>
+                <div class="form-group">
+                    <label>Smarty Auth Token</label>
+                    <input type="password" id="smartyAuthToken" placeholder="请输入 Smarty Auth Token" />
+                    <button class="toggle-pwd" onclick="togglePassword('smartyAuthToken', this)" title="显示/隐藏密码">👁</button>
+                </div>
+                <button class="btn-save-config" onclick="saveConfig()">保存密钥</button>
+            </div>
+
+            <!-- 地址输入 -->
+            <div class="section input-section">
+                <h2><i class="icon-location"></i> 用户地址</h2>
+                <div class="address-input-row">
+                    <input type="text" id="userAddress" placeholder="例如：130 5th Ave, New York, NY 10011" />
+                    <button id="btnParse" class="btn-primary" onclick="parseAddress()">
+                        ▶ 开始解析
+                    </button>
+                </div>
+            </div>
+
+            <!-- 原始坐标输入 -->
+            <div class="section coords-section">
+                <h2><i class="icon-pin"></i> 原始坐标（可选）</h2>
+                <div class="coords-input-row">
+                    <input type="text" id="rawCoord" placeholder="纬度, 经度  例: 40.7400, -73.9920" />
+                </div>
+                <p class="coords-hint">输入经纬度后自动在地图上标记（绿色点）</p>
+            </div>
+
+            <!-- 解析结果对比 -->
+            <div class="section result-section" style="display: none;" id="resultSection">
+                <h2><i class="icon-table"></i> 解析结果对比</h2>
+
+                <!-- 对比表格 -->
+                <table class="compare-table" id="compareTable">
+                    <thead>
+                        <tr>
+                            <th>对比字段</th>
+                            <th><span class="dot dot-google"></span> Google</th>
+                            <th><span class="dot dot-smarty"></span> Smarty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="field-label">标准地址</td>
+                            <td id="googleAddress" class="cell-value">-</td>
+                            <td id="smartyAddress" class="cell-value">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">邮编</td>
+                            <td id="googleZipcode" class="cell-value">-</td>
+                            <td id="smartyZipcode" class="cell-value">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">地址精度</td>
+                            <td id="googlePrecision" class="cell-value">-</td>
+                            <td id="smartyPrecision" class="cell-value">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">经纬度</td>
+                            <td id="googleLatLng" class="cell-value">-</td>
+                            <td id="smartyLatLng" class="cell-value">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 状态行 -->
+                <div class="status-row" id="statusRow" style="display: none;">
+                    <span id="statusText" class="status-badge">解析中...</span>
+                    <span id="compareText" class="compare-result" style="display:none;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧地图面板 -->
+        <div class="right-panel">
+            <div id="map"></div>
+            
+            <!-- 地图图例 -->
+            <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot legend-google"></span> Google 解析坐标</div>
+                <div class="legend-item"><span class="legend-dot legend-smarty"></span> Smarty 解析坐标</div>
+                <div class="legend-item"><span class="legend-dot legend-center"></span> 原始坐标</div>
+            </div>
+
+            <!-- Leaflet & Google 归属 -->
+            <div class="map-attribution">
+                Leaflet | © Google
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
