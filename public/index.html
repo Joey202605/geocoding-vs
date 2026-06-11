@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地址解析对比工具 - Google vs Smarty</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- 左侧面板 -->
+    <div class="left-panel">
+      <header>
+        <h1>地址解析对比</h1>
+        <p class="subtitle">Google Geocoding vs SmartyStreets</p>
+      </header>
+
+      <!-- API 密钥配置区 -->
+      <div class="config-section">
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          API 密钥配置
+        </div>
+        <div class="config-grid">
+          <div class="config-item">
+            <label for="googleKey">Google API Key</label>
+            <input type="password" id="googleKey" placeholder="请输入 Google Geocoding API 密钥" />
+          </div>
+          <div class="config-item">
+            <label for="smartyAuthId">Smarty Auth ID</label>
+            <input type="password" id="smartyAuthId" placeholder="请输入 Smarty Auth ID" />
+          </div>
+          <div class="config-item">
+            <label for="smartyAuthToken">Smarty Auth Token</label>
+            <input type="password" id="smartyAuthToken" placeholder="请输入 Smarty Auth Token" />
+          </div>
+        </div>
+        <div class="config-actions">
+          <button id="saveKeysBtn" class="btn btn-outline">保存密钥</button>
+          <span id="keysStatus" class="keys-status"></span>
+        </div>
+      </div>
+
+      <!-- 地址输入区 -->
+      <div class="input-section">
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+          用户地址
+        </div>
+        <div class="input-row">
+          <input type="text" id="addressInput" placeholder="请输入要解析的地址，如：1600 Amphitheatre Pkwy, Mountain View, CA" />
+          <button id="startBtn" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始解析
+          </button>
+        </div>
+        <div class="input-sub-row">
+          <label for="originalCoord">原始经纬度（可选）</label>
+          <input type="text" id="originalCoord" placeholder="格式：lat, lng  例：40.7484, -73.9857" />
+        </div>
+        <div id="loadingIndicator" class="loading" style="display:none;">
+          <div class="spinner"></div>
+          <span>正在解析地址...</span>
+        </div>
+        <div id="errorMsg" class="error-msg" style="display:none;"></div>
+      </div>
+
+      <!-- 解析结果对比区 -->
+      <div class="result-section" id="resultSection" style="display:none;">
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          解析结果对比
+        </div>
+
+        <!-- 对比表格 -->
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>对比字段</th>
+              <th><span class="badge badge-google">G</span> Google</th>
+              <th><span class="badge badge-smarty">S</span> Smarty</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="field-label">标准地址</td>
+              <td id="googleAddress" class="cell-google">-</td>
+              <td id="smartyAddress" class="cell-smarty">-</td>
+            </tr>
+            <tr>
+              <td class="field-label">邮编</td>
+              <td id="googleZip" class="cell-google">-</td>
+              <td id="smartyZip" class="cell-smarty">-</td>
+            </tr>
+            <tr>
+              <td class="field-label">地址精度</td>
+              <td id="googlePrecision" class="cell-google">-</td>
+              <td id="smartyPrecision" class="cell-smarty">-</td>
+            </tr>
+            <tr>
+              <td class="field-label">经纬度</td>
+              <td id="googleCoord" class="cell-google">-</td>
+              <td id="smartyCoord" class="cell-smarty">-</td>
+            </tr>
+            <tr>
+              <td class="field-label">状态</td>
+              <td id="googleStatus" class="cell-google">-</td>
+              <td id="smartyStatus" class="cell-smarty">-</td>
+            </tr>
+            <tr id="distanceRow" style="display:none;">
+              <td class="field-label">经纬度距离差</td>
+              <td colspan="2" id="coordDistance" style="text-align:center; background:#f5f5f5;">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 右侧地图面板 -->
+    <div class="right-panel">
+      <div id="map"></div>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-marker legend-google">G</div>
+          <span>Google 解析坐标</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-marker legend-smarty">S</div>
+          <span>Smarty 解析坐标</span>
+        </div>
+        <div class="legend-item" id="legendOriginal" style="display:none;">
+          <div class="legend-marker legend-original">O</div>
+          <span>原始坐标</span>
+        </div>
+        <div class="legend-item legend-distance" id="legendDistance" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span id="distanceText">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
