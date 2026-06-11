@@ -4,3 +4,4 @@ Thumbs.db
 *.log
 test_smarty.js
 需求描述.txt
+".playwright-cli/"  

@@ -34,7 +34,7 @@ const els = {
 const map = L.map('map').setView([39.8283, -98.5795], 4); // 美国中心
 
 // 使用 Google Maps 瓦片（免费，无需 API Key）
-L.tileLayer('https://mts1.googleapis.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
+L.tileLayer('https://mt1.googleapis.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
   attribution: '&copy; Google',
   maxZoom: 20,
 }).addTo(map);
