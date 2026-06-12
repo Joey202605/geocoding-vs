@@ -1,0 +1,27 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - heading "📮 地址智能助手" [level=1] [ref=e4]
+    - paragraph [ref=e5]: 快速纠错 · 即刻派送
+  - main [ref=e6]:
+    - generic [ref=e8]:
+      - heading "📋 上报地址问题" [level=2] [ref=e9]
+      - generic [ref=e10]:
+        - button "📍 定位偏移" [ref=e11] [cursor=pointer]
+        - button "🏠 缺少房间号" [ref=e12] [cursor=pointer]
+        - button "🚫 无法进入" [ref=e13] [cursor=pointer]
+        - button "❌ 地址错误" [ref=e14] [cursor=pointer]
+      - generic [ref=e15]:
+        - generic [ref=e16]: 用户原始地址
+        - textbox "如：130 5th Ave, New York, NY 10011" [ref=e17]
+      - generic [ref=e18]:
+        - generic [ref=e19]: 系统解析的地址（旧系统）
+        - textbox "如：130 5th Ave, New York, NY 10011" [ref=e20]
+      - generic [ref=e21]:
+        - generic [ref=e22]: 系统解析的经纬度
+        - textbox "如：40.7390675193552, -73.99262603259648" [ref=e23]
+      - generic [ref=e24]:
+        - generic [ref=e25]: 问题描述
+        - generic [ref=e26]:
+          - textbox "描述你遇到的问题，如：这个位置不对，我到了这个地方找不到用户地址..." [ref=e27]
+          - button "🎤" [ref=e28] [cursor=pointer]
+      - button "🔍 智能分析问题" [ref=e30] [cursor=pointer]

@@ -1,0 +1,4 @@
+[      20ms] [WARNING] Google Maps API Key 未配置，地图功能将不可用。请在 config.js 中配置。 @ http://localhost:8080/index.html:20
+[      21ms] [LOG] 📮 地址智能助手已就绪 @ http://localhost:8080/app.js:836
+[      21ms] [LOG] 请在 config.js 中配置 Smarty 和 Google API Key @ http://localhost:8080/app.js:837
+[      88ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8080/favicon.ico:0

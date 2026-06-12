@@ -1,0 +1,10 @@
+{
+  "pkg": {
+    "assets": [
+      "index.html",
+      "app.js",
+      "style.css"
+    ],
+    "outputPath": "dist"
+  }
+}

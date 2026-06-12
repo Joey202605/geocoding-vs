@@ -1,0 +1,54 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - heading "地址解析对比" [level=1] [ref=e5]
+      - paragraph [ref=e6]: Google Geocoding vs SmartyStreets
+    - generic [ref=e7]:
+      - heading "🔑 API 密钥配置" [level=2] [ref=e8]:
+        - generic [ref=e9]: 🔑
+        - text: API 密钥配置
+      - generic [ref=e10]:
+        - generic [ref=e11]: Google API Key
+        - textbox "请输入 Google API Key" [ref=e12]
+        - button "👁" [ref=e13] [cursor=pointer]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Smarty Auth ID
+        - textbox "请输入 Smarty Auth ID" [ref=e16]
+        - button "👁" [ref=e17] [cursor=pointer]
+      - generic [ref=e18]:
+        - generic [ref=e19]: Smarty Auth Token
+        - textbox "请输入 Smarty Auth Token" [ref=e20]
+        - button "👁" [ref=e21] [cursor=pointer]
+      - button "保存密钥" [ref=e22] [cursor=pointer]
+    - generic [ref=e23]:
+      - heading "📝 用户地址" [level=2] [ref=e24]:
+        - generic [ref=e25]: 📝
+        - text: 用户地址
+      - generic [ref=e26]:
+        - textbox "例如：130 5th Ave, New York, NY 10011" [active] [ref=e27]
+        - button "▶ 开始解析" [ref=e28] [cursor=pointer]
+    - generic [ref=e29]:
+      - heading "📌 原始坐标（可选）" [level=2] [ref=e30]:
+        - generic [ref=e31]: 📌
+        - text: 原始坐标（可选）
+      - 'textbox "纬度, 经度 例: 40.7400, -73.9920" [ref=e33]':
+        - /placeholder: "纬度, 经度  例: 40.7400, -73.9920"
+      - paragraph [ref=e34]: 输入经纬度后自动在地图上标记（绿色点）
+    - text: 📋
+  - generic [ref=e35]:
+    - generic [ref=e36]:
+      - generic:
+        - generic [ref=e37]:
+          - button "Zoom in" [ref=e38] [cursor=pointer]: +
+          - button "Zoom out" [ref=e39] [cursor=pointer]: −
+        - generic [ref=e40]:
+          - link "Leaflet" [ref=e41] [cursor=pointer]:
+            - /url: https://leafletjs.com
+            - img [ref=e42]
+            - text: Leaflet
+          - text: "| © Google"
+    - generic [ref=e46]:
+      - generic [ref=e47]: Google 解析坐标
+      - generic [ref=e49]: Smarty 解析坐标
+      - generic [ref=e51]: 原始坐标
+    - generic [ref=e53]: Leaflet | © Google
