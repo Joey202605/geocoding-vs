@@ -298,37 +298,9 @@ async function callSmartyAPI(address, authId, authToken) {
         if (state) url += `&state=${encodeURIComponent(state)}`;
         if (zipcode) url += `&zipcode=${encodeURIComponent(zipcode)}`;
 
-        // 多代理 fallback：依次尝试直连和多个 CORS 代理
-        const proxyList = [
-            { name: 'direct', getUrl: (u) => u },
-            { name: 'corsproxy.io', getUrl: (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}` },
-            { name: 'codetabs', getUrl: (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}` },
-        ];
-
-        let response = null;
-        let lastError = null;
-
-        for (const proxy of proxyList) {
-            try {
-                const fetchUrl = proxy.getUrl(url);
-                console.log(`[Smarty] 尝试 ${proxy.name}...`);
-                response = await fetch(fetchUrl);
-                if (response.ok) {
-                    console.log(`[Smarty] ${proxy.name} 成功`);
-                    break;
-                }
-                console.warn(`[Smarty] ${proxy.name} 返回 ${response.status}`);
-                lastError = `${proxy.name}: HTTP ${response.status}`;
-            } catch (err) {
-                console.warn(`[Smarty] ${proxy.name} 失败:`, err.message);
-                lastError = `${proxy.name}: ${err.message}`;
-            }
-        }
-
-        if (!response || !response.ok) {
-            return { error: `Smarty: 所有代理均失败 (${lastError || '未知错误'})` };
-        }
-
+        // Smarty API 本身支持 CORS（会返回 Access-Control-Allow-Origin 头），直接 fetch 即可
+        console.log('[Smarty] 直连 API...');
+        const response = await fetch(url);
         const data = await response.json();
 
         if (!Array.isArray(data) || data.length === 0) {
