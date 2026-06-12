@@ -37,6 +37,7 @@ function saveConfig() {
     localStorage.setItem('googleApiKey', document.getElementById('googleApiKey').value);
     localStorage.setItem('smartyAuthId', document.getElementById('smartyAuthId').value);
     localStorage.setItem('smartyAuthToken', document.getElementById('smartyAuthToken').value);
+    localStorage.setItem('smartyEmbeddedKey', document.getElementById('smartyEmbeddedKey').value);
     alert('密钥已保存');
 }
 
@@ -45,9 +46,11 @@ function loadConfig() {
     const googleKey = localStorage.getItem('googleApiKey');
     const smartyId = localStorage.getItem('smartyAuthId');
     const smartyToken = localStorage.getItem('smartyAuthToken');
+    const smartyEmbedded = localStorage.getItem('smartyEmbeddedKey');
     if (googleKey) document.getElementById('googleApiKey').value = googleKey;
     if (smartyId) document.getElementById('smartyAuthId').value = smartyId;
     if (smartyToken) document.getElementById('smartyAuthToken').value = smartyToken;
+    if (smartyEmbedded) document.getElementById('smartyEmbeddedKey').value = smartyEmbedded;
 }
 
 // ===== 标签页切换 =====
@@ -254,7 +257,8 @@ async function callGoogleAPI(address, apiKey) {
 }
 
 // ===== 调用 Smarty Streets US Street API =====
-async function callSmartyAPI(address, authId, authToken) {
+// 支持两种认证：authId+authToken（密钥对）或 embeddedKey（嵌入式密钥，推荐浏览器端使用）
+async function callSmartyAPI(address, authId, authToken, embeddedKey) {
     try {
         // 智能拆分地址：street / city / state / zipcode
         const parts = address.split(',').map(s => s.trim()).filter(s => s);
@@ -292,15 +296,46 @@ async function callSmartyAPI(address, authId, authToken) {
         }
 
         // 构建 Smarty API URL
-        let url = `https://us-street.api.smartystreets.com/street-address?auth-id=${encodeURIComponent(authId)}&auth-token=${encodeURIComponent(authToken)}`;
+        // Embedded Key 使用 ?key= 参数；Auth ID+Token 使用 ?auth-id= &auth-token=
+        let url;
+        if (embeddedKey) {
+            url = `https://us-street.api.smartystreets.com/street-address?key=${encodeURIComponent(embeddedKey)}`;
+        } else {
+            url = `https://us-street.api.smartystreets.com/street-address?auth-id=${encodeURIComponent(authId)}&auth-token=${encodeURIComponent(authToken)}`;
+        }
         if (street) url += `&street=${encodeURIComponent(street)}`;
         if (city) url += `&city=${encodeURIComponent(city)}`;
         if (state) url += `&state=${encodeURIComponent(state)}`;
         if (zipcode) url += `&zipcode=${encodeURIComponent(zipcode)}`;
 
-        // Smarty API 本身支持 CORS（会返回 Access-Control-Allow-Origin 头），直接 fetch 即可
-        console.log('[Smarty] 直连 API...');
-        const response = await fetch(url);
+        // Smarty API 本身支持 CORS，直接 fetch
+        // 使用 mode: 'cors' 显式声明跨域请求
+        console.log('[Smarty] 直连 API:', url.substring(0, 100));
+        let response;
+        try {
+            response = await fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: { 'Accept': 'application/json' }
+            });
+        } catch (fetchErr) {
+            console.error('[Smarty] fetch 失败:', fetchErr);
+            // 尝试备用域名 smarty.com
+            const altUrl = url.replace('smartystreets.com', 'smarty.com');
+            console.log('[Smarty] 尝试备用域名:', altUrl.substring(0, 100));
+            try {
+                response = await fetch(altUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: { 'Accept': 'application/json' }
+                });
+            } catch (altErr) {
+                console.error('[Smarty] 备用域名也失败:', altErr);
+                return { error: `Smarty: 网络连接失败，请检查网络或防火墙设置 (${fetchErr.message})` };
+            }
+        }
         const data = await response.json();
 
         if (!Array.isArray(data) || data.length === 0) {
@@ -442,13 +477,20 @@ async function parseAddress() {
     const apiKey = document.getElementById('googleApiKey').value.trim();
     const authId = document.getElementById('smartyAuthId').value.trim();
     const authToken = document.getElementById('smartyAuthToken').value.trim();
+    const embeddedKey = document.getElementById('smartyEmbeddedKey').value.trim();
 
     if (!addressInput) {
         alert('请输入用户地址');
         return;
     }
-    if (!apiKey || !authId || !authToken) {
-        alert('请先配置完整的 API 密钥（Google API Key、Smarty Auth ID 和 Auth Token）');
+    if (!apiKey) {
+        alert('请配置 Google API Key');
+        return;
+    }
+    // Smarty 支持两种认证方式：Auth ID+Token 或 Embedded Key
+    const hasSmarty = (authId && authToken) || embeddedKey;
+    if (!hasSmarty) {
+        alert('请配置 Smarty 密钥（Auth ID + Auth Token，或 Embedded Key）');
         return;
     }
 
@@ -476,7 +518,7 @@ async function parseAddress() {
             }
         });
 
-        const smartyPromise = callSmartyAPI(addressInput, authId, authToken).then(r => {
+        const smartyPromise = callSmartyAPI(addressInput, authId, authToken, embeddedKey).then(r => {
             smartyResult = r;
             fillSmartyResult(r);
             smartyDone = true;
